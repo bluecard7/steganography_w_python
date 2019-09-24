@@ -11,7 +11,3 @@ I would appreciate if you take a look and help me find the issue!
 
 ## Link to post about this project
 - Coming Soon!
-
-## Alternative Way to do Steganography in Python with pillow:
- 
-- https://www.youtube.com/watch?v=q3eOOMx5qoo
