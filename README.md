@@ -7,7 +7,7 @@ I had complications integrating zlib in my C implementation, so I decided to jus
 
 As of 9/24/19, this script can only recover up to 380 characters. 
 I don't know why this is the case yet.
-I would appreciate if you take a look and help me find the issue!
+I'd appreciate if you take a look and help me find the issue!
 
 ## Link to post about this project
-- Coming Soon!
+- [https://bluecard7.github.io/posts/png_steganography.html](https://bluecard7.github.io/posts/png_steganography.html)
