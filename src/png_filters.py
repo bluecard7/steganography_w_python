@@ -28,24 +28,76 @@ def rev_up(data, pos, scanline_start, width):
 
 # type 3
 def avg(data, pos, scanline_start, width):
-    if scanline_start == 1: return
-    if pos - 3 < scanline_start: return
+    if scanline_start == 1 and  pos - 3 < scanline_start: return
+
+    if scanline_start == 1: 
+        data[pos] = (data[pos] - 
+                     data[pos - 3] // 2 ) % 256
+        return
+
+    if pos - 3 < scanline_start: 
+        data[pos] = (data[pos] - 
+                     data[pos - width * 3 - 1] // 2) % 256
+        return
+
     data[pos] = (data[pos] - 
                 (data[pos - 3] + data[pos - width * 3 - 1]) // 2) % 256
 
 def rev_avg(data, pos, scanline_start, width):
-    if scanline_start == 1: return
-    if pos - 3 < scanline_start: return
+    if scanline_start == 1 and  pos - 3 < scanline_start: return
+
+    if scanline_start == 1: 
+        data[pos] = (data[pos] + 
+                     data[pos - 3] // 2 ) % 256
+        return
+
+    if pos - 3 < scanline_start: 
+        data[pos] = (data[pos] + 
+                     data[pos - width * 3 - 1] // 2) % 256
+        return
+
     data[pos] = (data[pos] + 
                 (data[pos - 3] + data[pos - width * 3 - 1]) // 2) % 256
 
 # type 4
+def paeth_predictor(a, b, c):
+    p = a + b - c
+    pa = abs(p - a)
+    pb = abs(p - b)
+    pc = abs(p - c)
+
+    if pa <= pb and pa <= pc: return a
+    if pb <= pc: return b
+    return c
+
 def paeth(data, pos, scanline_start, width):
-    pass
+    if scanline_start == 1 and pos - 3 < scanline_start: return
+    
+    if scanline_start == 1: # same as sub
+        data[pos] = (data[pos] - data[pos - 3]) % 256
+        return
+
+    if pos - 3 < scanline_start: # same as up
+        data[pos] = (data[pos] - data[pos - width * 3 - 1]) % 256
+        return
+
+    data[pos] = (data[pos] - 
+                 paeth_predictor(data[pos - 3], data[pos - width * 3 - 1], data[pos - width * 3 - 4])) % 256
+
 
 def rev_paeth(data, pos, scanline_start, width):
-    pass
+    if scanline_start == 1 and pos - 3 < scanline_start: return 
 
+    if scanline_start == 1: # same as rev_sub
+        data[pos] = (data[pos] + data[pos - 3]) % 256
+        return
+
+    if pos - 3 < scanline_start: # same as rev_up
+        data[pos] = (data[pos] + data[pos - width * 3 - 1]) % 256
+        return
+
+    data[pos] = (data[pos] +
+                 paeth_predictor(data[pos - 3], data[pos - width * 3 - 1], data[pos - width * 3 - 4])) % 256
 
 add_filters = [none, sub, up, avg, paeth]
 rev_filters = [none, rev_sub, rev_up, rev_avg, rev_paeth]
