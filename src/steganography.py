@@ -61,15 +61,15 @@ def encode_IDAT(chunk_data, encode_buf):
         scanline_start = i * width * 3 + i + 1
         reverse_filter(data, filter_type, scanline_start, width)
         # encode here
-        if filter_type < 4: # since Paeth Predictor not done yet
-            j = 0
+        
+        j = 0
+        bits = encode_buf.next_two_bits()
+        while bits != None and j < width * 3 + 1:
+            data[scanline_start + j] &= 0xFC
+            data[scanline_start + j] += bits
             bits = encode_buf.next_two_bits()
-            while bits != None and j < width * 3 + 1:
-                data[scanline_start + j] &= 0xFC
-                data[scanline_start + j] += bits
-                bits = encode_buf.next_two_bits()
-                # controls which part of pixel to change
-                j += 1 
+            # controls which part of pixel to change
+            j += 1 
 
     # when adding filter, start bottom right and go left and up
     for i in range(0, height)[::-1]:
@@ -111,6 +111,8 @@ def encode():
 def decode_IDAT(chunk_data, decode_buf):
     # https://docs.python.org/3/library/zlib.html#zlib.decompressobj
     # without this way of doing things, the max len of message can only be 3... why?
+    # Might have to do with this(may have messed this up in encode): 
+    #   http://www.libpng.org/pub/png/spec/1.2/PNG-Compression.html
     zobj = zlib.decompressobj(zlib.MAX_WBITS)
     data = zobj.decompress(chunk_data)
     # data needs to be converted back to an array (decompressed bytes)
@@ -120,14 +122,14 @@ def decode_IDAT(chunk_data, decode_buf):
         filter_type = data[i * width * 3 + i]
         scanline_start = i * width * 3 + i + 1
         reverse_filter(data, filter_type, scanline_start, width)
-        # encode here
-        if filter_type < 4: # since Paeth Predictor not done yet
-            j = 0
-            while not decode_buf.check_end() and j < width * 3 + 1:
-                decode_buf.append_two_bits(data[scanline_start + j])
-                # controls which part of pixel to change
-                j += 1 
+        
+        j = 0
+        while not decode_buf.check_end() and j < width * 3 + 1:
+            decode_buf.append_two_bits(data[scanline_start + j])
+            # controls which part of pixel to change
+            j += 1 
 
+# Can be made more efficient by moving file pointer to IDAT chunks only
 def decode():
     decode_buf = DecodeBuffer()
 
