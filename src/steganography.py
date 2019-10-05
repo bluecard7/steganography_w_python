@@ -1,4 +1,3 @@
-import io
 import sys
 import zlib
 
@@ -52,9 +51,10 @@ def read_crc():
 def encode_IDAT(chunk_data, encode_buf):
     # Keep in mind width and height are in terms of pixels!
     data = zlib.decompress(chunk_data)
+    
     # data needs to be converted back to an array (decompressed bytes)
     data = bytearray(data)
-
+    
     # when reversing filter, start top left and go right and down 
     for i in range(0, height):
         filter_type = data[i * width * 3 + i]
@@ -77,7 +77,8 @@ def encode_IDAT(chunk_data, encode_buf):
         scanline_start = i * width * 3 + i + 1
         add_filter(data, filter_type, scanline_start, width)
 
-    data = zlib.compress(data)
+    # has to be "method code 8" based on http://www.libpng.org/pub/png/spec/1.2/PNG-Compression.html
+    data = zlib.compress(data, level = 8) 
     return data
 
 def encode():
@@ -109,12 +110,9 @@ def encode():
 
 
 def decode_IDAT(chunk_data, decode_buf):
-    # https://docs.python.org/3/library/zlib.html#zlib.decompressobj
-    # without this way of doing things, the max len of message can only be 3... why?
-    # Might have to do with this(may have messed this up in encode): 
-    #   http://www.libpng.org/pub/png/spec/1.2/PNG-Compression.html
     zobj = zlib.decompressobj(zlib.MAX_WBITS)
     data = zobj.decompress(chunk_data)
+
     # data needs to be converted back to an array (decompressed bytes)
     data = bytearray(data)
     
@@ -155,12 +153,14 @@ def decode():
     decode_buf.output_msg()
 
 '''
+Images source: http://homepages.cae.wisc.edu/~ece533/images/
+
 Lot of assumptions:
     For decode:
     - Assumes encoded image is called secret.png
     
     For encode:
-    - Image to be encoded is RGB image and named baboon.png
+    - Image to be encoded is RGB image
     - message to be hidden is in stdin
     - size of bits to hide will always be 2
 '''

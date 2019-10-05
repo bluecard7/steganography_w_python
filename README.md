@@ -5,9 +5,9 @@ It assumes an RGB image and the message is in stdin.
 It serves as a proof of concept for what I really wanted to do, which was a steganography implementation in C.
 I had complications integrating zlib in my C implementation, so I decided to just work with Python to see how everything would work once I got it to integrate.
 
-As of 9/24/19, this script can only recover up to 380 characters. 
+As of 10/4/19, this script can only recover up to 380 characters.
+It also doesn't maintain the appearance of some png images.
 I don't know why this is the case yet.
-I'd appreciate if you take a look and help me find the issue!
 
 ## Link to post about this project
 - [https://bluecard7.github.io/posts/png_steganography.html](https://bluecard7.github.io/posts/png_steganography.html)

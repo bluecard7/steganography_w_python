@@ -1,6 +1,6 @@
 import sys 
 
-terminate = 'END'
+terminate = 'Spaghettio'
 
 class EncodeBuffer:
     def __init__(self):
