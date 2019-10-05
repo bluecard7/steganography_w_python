@@ -10,12 +10,12 @@ It also doesn't maintain the appearance of some png images.
 I don't know why this is the case yet.
 
 To encode:
-cd src
-cat message.txt | python steganography.py encode
+- cd src
+- cat message.txt | python steganography.py encode
 
 To decode: 
-cd src
-python steganography.py decode
+- cd src
+- python steganography.py decode
 
 ## Link to post about this project
 - [https://bluecard7.github.io/posts/png_steganography.html](https://bluecard7.github.io/posts/png_steganography.html)
